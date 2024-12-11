@@ -8,11 +8,11 @@ import {
   Text,
   View,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import Card from '../components/Card';
 
 // Assets
-import ProfileImg from '../assets/profileimg.jpeg';
+import ProfileImg from '../assets/icon.png';
 import LightOn from '../assets/lightbulbon.png';
 import LightOff from '../assets/lightbulboff.png';
 import DoorClose from '../assets/doorclose.png';
@@ -20,6 +20,7 @@ import DoorOpen from '../assets/dooropen.png';
 import PowerSocket from '../assets/powersocket.png';
 import PowerSocketOff from '../assets/powersocketoff.png';
 import useGadgets from '../hooks/useGadgets';
+import { StatusBar } from 'expo-status-bar';
 
 const DashboardScreen = () => {
   const {
@@ -55,7 +56,8 @@ const DashboardScreen = () => {
   } = useGadgets();
 
   return (
-    <SafeAreaView style={{flex: 1, backgroundColor: '#f1f1f1'}}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#f1f1f1' }}>
+      <StatusBar style='light' />
       <ScrollView
         refreshControl={
           <RefreshControl
@@ -65,14 +67,16 @@ const DashboardScreen = () => {
               setRefreshing(true);
             }}
           />
-        }>
+        }
+      >
         <View style={styles.container}>
           <View
             style={{
               ...styles.flexRowContainer,
               justifyContent: 'flex-start',
               gap: 20,
-            }}>
+            }}
+          >
             <Image
               style={{
                 width: 70,
@@ -83,19 +87,19 @@ const DashboardScreen = () => {
               source={ProfileImg}
             />
             <View>
-              <Text style={styles.h3}>Welcome, Memby!</Text>
+              <Text style={styles.h3}>Welcome, Ronisha!</Text>
               <Text>Your Autochalit dashboard</Text>
             </View>
           </View>
-          <View style={{marginBottom: 40}}></View>
-          <View style={{...styles.flexRowContainer, marginBottom: 10}}>
+          <View style={{ marginBottom: 40 }}></View>
+          <View style={{ ...styles.flexRowContainer, marginBottom: 10 }}>
             <Text style={styles.h4}>Main Controls</Text>
             {Boolean(
               (groundLoading && allLoading) ||
                 level1Loading & allLoading ||
                 (groundLoading && level1Loading) ||
                 allLoading ||
-                doorLoading,
+                doorLoading
             ) && <ActivityIndicator size={'small'} />}
           </View>
           <View style={styles.flexRowContainer}>
@@ -119,23 +123,23 @@ const DashboardScreen = () => {
                     JSON.stringify({
                       message: allLights.state ? 'off' : 'on',
                       name: 'allLights',
-                    }),
+                    })
                   );
                   if (!allLights.state) {
                     ws.send(
-                      JSON.stringify({message: 'on', name: 'groundLight'}),
+                      JSON.stringify({ message: 'on', name: 'groundLight' })
                     );
                     ws.send(
-                      JSON.stringify({message: 'on', name: 'level1Light'}),
+                      JSON.stringify({ message: 'on', name: 'level1Light' })
                     );
                     setGroundLoading(true);
                     setLevel1Loading(true);
                   } else {
                     ws.send(
-                      JSON.stringify({message: 'off', name: 'groundLight'}),
+                      JSON.stringify({ message: 'off', name: 'groundLight' })
                     );
                     ws.send(
-                      JSON.stringify({message: 'off', name: 'level1Light'}),
+                      JSON.stringify({ message: 'off', name: 'level1Light' })
                     );
                     setGroundLoading(true);
                     setLevel1Loading(true);
@@ -164,7 +168,7 @@ const DashboardScreen = () => {
                     JSON.stringify({
                       message: door.state ? 'off' : 'on',
                       name: 'door',
-                    }),
+                    })
                   );
                 } catch (error) {
                   console.log(error.message);
@@ -173,8 +177,8 @@ const DashboardScreen = () => {
               }}
             />
           </View>
-          <View style={{marginBottom: 40}}></View>
-          <View style={{...styles.flexRowContainer, marginBottom: 10}}>
+          <View style={{ marginBottom: 40 }}></View>
+          <View style={{ ...styles.flexRowContainer, marginBottom: 10 }}>
             <Text style={styles.h4}>Ground Floor</Text>
             {Boolean(groundLoading || allLoading) && (
               <ActivityIndicator size={'small'} />
@@ -194,15 +198,17 @@ const DashboardScreen = () => {
                   JSON.stringify({
                     message: groundLight.state ? 'off' : 'on',
                     name: 'groundLight',
-                  }),
+                  })
                 );
 
                 if (!groundLight.state && level1Light.state) {
                   // setAllLights({ ...allLights, state: true });
-                  ws.send(JSON.stringify({message: 'on', name: 'allLights'}));
+                  ws.send(JSON.stringify({ message: 'on', name: 'allLights' }));
                 } else {
                   // setAllLights({ ...allLights, state: false });
-                  ws.send(JSON.stringify({message: 'off', name: 'allLights'}));
+                  ws.send(
+                    JSON.stringify({ message: 'off', name: 'allLights' })
+                  );
                 }
               } catch (error) {
                 console.log(error.message);
@@ -213,7 +219,8 @@ const DashboardScreen = () => {
               flexDirection: 'row-reverse',
               justifyContent: 'space-between',
               alignItems: 'center',
-            }}>
+            }}
+          >
             <Image
               style={{
                 width: 40,
@@ -227,20 +234,22 @@ const DashboardScreen = () => {
                 style={{
                   ...styles.title,
                   color: '#1a1a1a',
-                }}>
+                }}
+              >
                 Light
               </Text>
               <Text
                 style={{
                   ...styles.subtitle,
                   color: '#1a1a1a',
-                }}>
+                }}
+              >
                 {groundLight.state ? 'on' : 'off'}
               </Text>
             </View>
           </Card>
-          <View style={{marginBottom: 40}}></View>
-          <View style={{...styles.flexRowContainer, marginBottom: 10}}>
+          <View style={{ marginBottom: 40 }}></View>
+          <View style={{ ...styles.flexRowContainer, marginBottom: 10 }}>
             <Text style={styles.h4}>Level 1</Text>
             {Boolean(level1Loading || powerLoading || allLoading) && (
               <ActivityIndicator size={'small'} />
@@ -265,15 +274,17 @@ const DashboardScreen = () => {
                     JSON.stringify({
                       message: level1Light.state ? 'off' : 'on',
                       name: 'level1Light',
-                    }),
+                    })
                   );
                   if (groundLight.state && !level1Light.state) {
                     // setAllLights({ ...allLights, state: true });
-                    ws.send(JSON.stringify({message: 'on', name: 'allLights'}));
+                    ws.send(
+                      JSON.stringify({ message: 'on', name: 'allLights' })
+                    );
                   } else {
                     // setAllLights({ ...allLights, state: false });
                     ws.send(
-                      JSON.stringify({message: 'off', name: 'allLights'}),
+                      JSON.stringify({ message: 'off', name: 'allLights' })
                     );
                   }
                 } catch (error) {
@@ -300,7 +311,7 @@ const DashboardScreen = () => {
                     JSON.stringify({
                       message: powerSocket.state ? 'off' : 'on',
                       name: 'powerSocket',
-                    }),
+                    })
                   );
                 } catch (error) {
                   console.log(error.message);
